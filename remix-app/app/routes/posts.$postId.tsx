@@ -1,6 +1,7 @@
 import { json, LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 
+// paramsを用いてfetchして、取得データを返す
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${params.postId}`)
   const data = await response.json()
