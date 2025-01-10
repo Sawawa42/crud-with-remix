@@ -17,19 +17,18 @@ jobs:
         node-version: [22.x]
 
     steps:
-     - name: Checkout
-       uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    
-    - name: Change directory to project
-      run: cd ./remix-app
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./remix-app
 
-    - name: Build
-      run: yarn build
+      - name: Build
+        run: yarn build
+        working-directory: ./remix-app
