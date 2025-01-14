@@ -24,7 +24,7 @@ export default function Index() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center mt-8">ToDo</h1>
-      <div>
+      <div className='border rounded-lg p-4 my-4'>
         {/* 要素に一意性を持たせるためにkey属性を付与 */}
         {tasks.map((task) => (
           <div key={task.id} className="border p-4 my-4">
