@@ -10,10 +10,12 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@prisma/client": "^6.2.1",
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",
     "@remix-run/serve": "^2.15.2",
     "isbot": "^4.1.0",
+    "prisma": "^6.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
