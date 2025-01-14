@@ -29,6 +29,10 @@ jobs:
         run: yarn install
         working-directory: ./remix-app
 
+      - name: Typecheck
+        run: yarn tsc --noEmit
+        working-directory: ./remix-app
+
       - name: Build
         run: yarn build
         working-directory: ./remix-app
