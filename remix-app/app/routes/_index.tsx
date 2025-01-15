@@ -1,16 +1,10 @@
 import { json, type MetaFunction } from '@remix-run/node'
 import { useLoaderData, Link } from '@remix-run/react'
 
-import { PrismaClient } from '@prisma/client';
+// @prisma/clientからTask型をimport
+import { PrismaClient, Task } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
-// 型定義
-type Task = {
-  id: number
-  title: string
-  desc: string
-}
+const prisma = new PrismaClient(); // 今はここでもOK
 
 // meta関数: メタデータを変更する関数
 export const meta: MetaFunction = () => {
