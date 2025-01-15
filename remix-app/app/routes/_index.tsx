@@ -4,6 +4,8 @@ import { useLoaderData, Link } from '@remix-run/react'
 // @prisma/clientからTask型をimport
 import { PrismaClient, Task } from '@prisma/client';
 
+type TaskType = Pick<Task, 'id' | 'title' | 'desc' | 'status'>;
+
 const prisma = new PrismaClient(); // 今はここでもOK
 
 // meta関数: メタデータを変更する関数
@@ -26,6 +28,7 @@ export default function Index() {
               <Link to={`/tasks/${task.id}`} className="text-blue-600">
                 {task.title}
               </Link>
+              <p>{task.status}</p>
             </li>
           </div>
         ))}
@@ -42,11 +45,12 @@ export default function Index() {
 export const loader = async () => {
   // Prismaを使ってデータベースからデータを取得
   const tasks = await prisma.task.findMany();
-  const data: Task[] = tasks.map((task) => {
+  const data: TaskType[] = tasks.map((task) => {
     return {
       id: task.id,
       title: task.title,
-      desc: task.desc
+      desc: task.desc,
+      status: task.status
     }
   });
   return json({ tasks: data })
