@@ -2,8 +2,10 @@ import { json, type MetaFunction } from '@remix-run/node'
 import { useLoaderData, Link } from '@remix-run/react'
 
 // @prisma/clientからTask型をimport
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Task } from '@prisma/client';
 
+
+type TaskType = Pick<Task, 'id' | 'title' | 'status' | 'updatedAt'>;
 const prisma = new PrismaClient(); // 今はここでもOK
 
 // meta関数: メタデータを変更する関数
@@ -20,51 +22,9 @@ export default function Index() {
       <h1 className="text-2xl font-bold text-center mt-8">ToDo</h1>
       <div className='border rounded-lg p-4 my-4 flex'>
         {/* タスクのステータスごとに分割表示 */}
-        <div className='border rounded-lg p-4 my-4 flex-1'>
-          backlog
-          {tasks.map((task) => (
-            task.status === 'BACKLOG' ? (
-              <div key={task.id} className="border p-4 my-4">
-                <div>
-                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
-                    {task.title}
-                  </Link>
-                  <div className='flex-1'>updatedAt: {processString(task.updatedAt)}</div>
-                </div>
-              </div>
-            ) : null
-          ))}
-        </div>
-        <div className='border rounded-lg p-4 my-4 flex-1'>
-          in progress
-          {tasks.map((task) => (
-            task.status === 'IN_PROGRESS' ? (
-              <div key={task.id} className="border p-4 my-4">
-                <div>
-                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
-                    {task.title}
-                  </Link>
-                  <div className='flex-1'>updatedAt: {processString(task.updatedAt)}</div>
-                </div>
-              </div>
-            ) : null
-          ))}
-        </div>
-        <div className='border rounded-lg p-4 my-4 flex-1'>
-          done
-          {tasks.map((task) => (
-            task.status === 'DONE' ? (
-              <div key={task.id} className="border p-4 my-4">
-                <div>
-                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
-                    {task.title}
-                  </Link>
-                  <div className='flex-1'>updatedAt: {processString(task.updatedAt)}</div>
-                </div>
-              </div>
-            ) : null
-          ))}
-        </div>
+          {taskItem(tasks, 'BACKLOG')}
+          {taskItem(tasks, 'IN_PROGRESS')}
+          {taskItem(tasks, 'DONE')}
       </div>
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         <Link to="/tasks/new">New Task</Link>
@@ -78,11 +38,38 @@ export default function Index() {
 export const loader = async () => {
   // Prismaを使ってデータベースからデータを取得
   const tasks = await prisma.task.findMany();
-  return json({ tasks: tasks })
+  const data: TaskType[] = tasks.map((task) => {
+    return {
+      id: task.id,
+      title: task.title,
+      status: task.status,
+      updatedAt: task.updatedAt,
+    };
+  });
+  return { tasks: data };
 }
 
-const processString = (input: string): string => {
-  const replaced = input.replace(/T/g, " ");
-  const result = replaced.slice(0, -8);
+const dateToStr = (input: Date): string => {
+  const result = new Date(input).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit", day: "2-digit"});
   return result;
 };
+
+const taskItem = (tasks: TaskType[], status: string) => {
+  return (
+    <div className='border rounded-lg p-4 my-4 flex-1'>
+      {status}
+      {tasks.map((task) => (
+        task.status === status ? (
+          <div key={task.id} className="border p-4 my-4">
+            <div>
+              <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
+                {task.title}
+              </Link>
+              <div className='flex-1'>updatedAt: {dateToStr(task.updatedAt)}</div>
+            </div>
+          </div>
+        ) : null
+      ))}
+    </div>
+  )
+}
