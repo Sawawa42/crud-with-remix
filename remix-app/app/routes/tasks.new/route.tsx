@@ -6,7 +6,7 @@ import { z } from 'zod';
 const statusOptions = Object.values(Status);
 const prisma = new PrismaClient();
 
-const CreateTaskSchema = z.object({
+const zodTaskSchema = z.object({
     title: z.string().min(1, "Title is required"),
     desc: z.string(),
     status: z.nativeEnum(Status),
@@ -20,7 +20,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const status = formData.get("status");
 
     // zodでバリデーション
-    const result = CreateTaskSchema.safeParse({ title, desc, status });
+    const result = zodTaskSchema.safeParse({ title, desc, status });
     if (!result.success) {
         return { error: 'error!' };
     }

@@ -1,10 +1,16 @@
 import { json, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { Form, useLoaderData, redirect } from "@remix-run/react";
-
 import { PrismaClient, Status } from '@prisma/client';
+import { z } from 'zod';
 
 const statusOptions = Object.values(Status);
 const prisma = new PrismaClient();
+
+const zodTaskSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    desc: z.string(),
+    status: z.nativeEnum(Status),
+});
 
 export default function Page() {
     const { task } = useLoaderData<typeof loader>();
@@ -48,16 +54,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     const title = formData.get("title");
     const desc = formData.get("desc");
     const status = formData.get("status");
-    console.log(`update: ${title} ${desc} ${status}`);
+   
+    const result = zodTaskSchema.safeParse({ title, desc, status });
+    if (!result.success) {
+        return { error: 'error!' };
+    }
+
     await prisma.task.update({
         where: {
             id: String(params.taskId),
         },
-        data: {
-            title: title as string,
-            desc: desc as string,
-            status: status as Status,
-        }
+        data: result.data,
     });
     return redirect("/");
 }
