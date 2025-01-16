@@ -20,18 +20,49 @@ export default function Index() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center mt-8">ToDo</h1>
-      <div className='border rounded-lg p-4 my-4'>
-        {/* 要素に一意性を持たせるためにkey属性を付与 */}
-        {tasks.map((task) => (
-          <div key={task.id} className="border p-4 my-4">
-            <li>
-              <Link to={`/tasks/${task.id}`} className="text-blue-600">
-                {task.title}
-              </Link>
-              <p>{task.status}</p>
-            </li>
-          </div>
-        ))}
+      <div className='border rounded-lg p-4 my-4 flex'>
+        <div className='border rounded-lg p-4 my-4 flex-1'>
+          backlog
+          {tasks.map((task) => (
+            task.status === 'BACKLOG' ? (
+              <div key={task.id} className="border p-4 my-4">
+                <li>
+                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                    {task.title}
+                  </Link>
+                </li>
+              </div>
+            ) : null
+          ))}
+        </div>
+        <div className='border rounded-lg p-4 my-4 flex-1'>
+          in progress
+          {tasks.map((task) => (
+            task.status === 'IN_PROGRESS' ? (
+              <div key={task.id} className="border p-4 my-4">
+                <li>
+                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                    {task.title}
+                  </Link>
+                </li>
+              </div>
+            ) : null
+          ))}
+        </div>
+        <div className='border rounded-lg p-4 my-4 flex-1'>
+          done
+          {tasks.map((task) => (
+            task.status === 'DONE' ? (
+              <div key={task.id} className="border p-4 my-4">
+                <li>
+                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                    {task.title}
+                  </Link>
+                </li>
+              </div>
+            ) : null
+          ))}
+        </div>
       </div>
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         <Link to="/tasks/new">New Task</Link>
