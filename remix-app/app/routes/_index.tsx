@@ -27,7 +27,7 @@ export default function Index() {
             task.status === 'BACKLOG' ? (
               <div key={task.id} className="border p-4 my-4">
                 <li>
-                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
                     {task.title}
                   </Link>
                 </li>
@@ -41,7 +41,7 @@ export default function Index() {
             task.status === 'IN_PROGRESS' ? (
               <div key={task.id} className="border p-4 my-4">
                 <li>
-                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
                     {task.title}
                   </Link>
                 </li>
@@ -55,7 +55,7 @@ export default function Index() {
             task.status === 'DONE' ? (
               <div key={task.id} className="border p-4 my-4">
                 <li>
-                  <Link to={`/tasks/${task.id}`} className="text-blue-600">
+                  <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
                     {task.title}
                   </Link>
                 </li>
