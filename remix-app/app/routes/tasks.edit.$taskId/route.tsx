@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { Form, useLoaderData, redirect } from "@remix-run/react";
+import { Form, useLoaderData, redirect, useActionData } from "@remix-run/react";
 import { PrismaClient, Status } from '@prisma/client';
 import { z } from 'zod';
 
@@ -14,6 +14,7 @@ const zodTaskSchema = z.object({
 
 export default function Page() {
     const { task } = useLoaderData<typeof loader>();
+    const data = useActionData<typeof action>();
 
     return (
         <div>
@@ -35,6 +36,7 @@ export default function Page() {
                     </select>
                 </label>
                 <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4">Submit</button>
+                {data?.error && <p className="text-red-500">{data.error}</p>}
             </Form>
         </div>
     )
