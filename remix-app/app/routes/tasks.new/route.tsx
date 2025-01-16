@@ -11,7 +11,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const title = formData.get("title");
     const desc = formData.get("desc");
     const status = formData.get("status");
-    console.log(title, desc, status);
+    console.log(`create: ${title} ${desc} ${status}`);
     await prisma.task.create({
         data: {
             title: title as string,
