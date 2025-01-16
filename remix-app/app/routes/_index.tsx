@@ -59,7 +59,7 @@ const taskItem = (tasks: TaskType[], status: string) => {
     <div className='border rounded-lg p-4 my-4 flex-1'>
       {status}
       {tasks.map((task) => (
-        task.status === status ? (
+        task.status === status && (
           <div key={task.id} className="border p-4 my-4">
             <div>
               <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
@@ -68,7 +68,7 @@ const taskItem = (tasks: TaskType[], status: string) => {
               <div className='flex-1'>updatedAt: {dateToStr(task.updatedAt)}</div>
             </div>
           </div>
-        ) : null
+        )
       ))}
     </div>
   )
