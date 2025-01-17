@@ -53,11 +53,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
     const formData = await request.formData();
-    const title = formData.get("title");
-    const desc = formData.get("desc");
-    const status = formData.get("status");
+    const data = Object.fromEntries(formData);
    
-    const result = zodTaskSchema.safeParse({ title, desc, status });
+    const result = zodTaskSchema.safeParse(data);
     if (!result.success) {
         return { error: 'error!' };
     }
