@@ -1,9 +1,9 @@
 import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, redirect, useActionData } from "@remix-run/react";
 import { PrismaClient, Status } from '@prisma/client';
-import { z } from 'zod';
+import { z, ZodLiteral } from 'zod';
 import { parseWithZod, getZodConstraint } from '@conform-to/zod';
-import { useForm, getFormProps, getInputProps, getTextareaProps } from '@conform-to/react';
+import { useForm, getFormProps, getInputProps, getTextareaProps, getSelectProps } from '@conform-to/react';
 
 const statusOptions = Object.values(Status);
 const prisma = new PrismaClient();
@@ -50,14 +50,20 @@ export default function Page() {
                     />
                 </label>
                 <label>
-                    {/* <select {...getSelectProps(fields.status)} className="block border-2"/> だと選択肢がでない?*/}
-                    <select name="status" className="block border-2">
+                    <select {...getInputProps(fields.status, 
+                        { type: "select", options: statusOptions }
+                    )} className="block border-2">
+                        {statusOptions.map((status) => (
+                            <option key={status} value={status}/>
+                        ))}
+                    </select>
+                    {/* <select name="status" className="block border-2">
                         {statusOptions.map((status) => (
                             <option key={status} value={status}>
                                 {status}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
                 </label>
                 <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4">Submit</button>
             </Form>
