@@ -3,7 +3,7 @@ import { Form, useLoaderData, redirect, useActionData } from "@remix-run/react";
 import { PrismaClient, Status } from '@prisma/client';
 import { z } from 'zod';
 import { parseWithZod, getZodConstraint } from '@conform-to/zod';
-import { useForm, getFormProps } from '@conform-to/react';
+import { useForm, getFormProps, getInputProps, getTextareaProps } from '@conform-to/react';
 
 const statusOptions = Object.values(Status);
 const prisma = new PrismaClient();
@@ -19,6 +19,8 @@ export default function Page() {
     const lastResult = useActionData<typeof action>();
     const [ form, fields ] = useForm({
         lastResult,
+        shouldValidate: 'onBlur',
+        shouldRevalidate: 'onInput',
         constraint: getZodConstraint(schema),
         onValidate( { formData }) {
             return parseWithZod(formData, { schema });
@@ -30,10 +32,18 @@ export default function Page() {
             <h1 className="text-3xl font-bold">Edit Task</h1>
             <Form method="put" {...getFormProps(form)}>
                 <label>
-                    <input type="text" name="title" className="block border-2" placeholder="Title" defaultValue={task?.title}/>
+                    <input
+                        {...getInputProps(fields.title, {
+                            type: 'text'
+                        })} className="block border-2" placeholder="Title" defaultValue={task?.title}
+                    />
                 </label>
+                {fields.title.errors && <p className="text-red-500">{'タイトルは必須です'}</p>}
                 <label>
-                    <textarea name="desc" className="block border-2" placeholder="Description" defaultValue={task?.desc}/>
+                    <textarea
+                        {...getTextareaProps(fields.desc)}
+                        className="block border-2" placeholder="Description" defaultValue={task?.desc}
+                    />
                 </label>
                 <label>
                     <select name="status" className="block border-2" defaultValue={task?.status}>
@@ -45,7 +55,6 @@ export default function Page() {
                     </select>
                 </label>
                 <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4">Submit</button>
-                {fields.title.errors && <p className="text-red-500">{'送信エラー'}</p>}
             </Form>
         </div>
     )
