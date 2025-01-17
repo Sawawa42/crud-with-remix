@@ -50,20 +50,11 @@ export default function Page() {
                     />
                 </label>
                 <label>
-                    <select {...getInputProps(fields.status, 
-                        { type: "select", options: statusOptions }
-                    )} className="block border-2">
+                    <select {...getSelectProps(fields.status)} className="block border-2">
                         {statusOptions.map((status) => (
-                            <option key={status} value={status}/>
+                            <option key={status} value={status}>{status}</option>
                         ))}
                     </select>
-                    {/* <select name="status" className="block border-2">
-                        {statusOptions.map((status) => (
-                            <option key={status} value={status}>
-                                {status}
-                            </option>
-                        ))}
-                    </select> */}
                 </label>
                 <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4">Submit</button>
             </Form>
