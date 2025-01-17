@@ -4,8 +4,6 @@ import { useLoaderData, Link, Form, redirect } from '@remix-run/react'
 // @prisma/clientからTask型をimport
 import { PrismaClient, Task } from '@prisma/client';
 
-
-type TaskType = Pick<Task, 'id' | 'title' | 'status' | 'updatedAt'>;
 const prisma = new PrismaClient(); // 今はここでもOK
 
 // meta関数: メタデータを変更する関数
@@ -16,7 +14,7 @@ export const meta: MetaFunction = () => {
 // default export
 // useLoaderData: loader関数で取得したデータをコンポーネント内で利用するためのフック
 export default function Index() {
-  const { tasks } = useLoaderData<typeof loader>()
+  const tasks = useLoaderData<typeof loader>()
   return (
     <div>
       <h1 className="text-2xl font-bold text-center mt-8">ToDo</h1>
@@ -49,18 +47,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export const loader = async () => {
   // Prismaを使ってデータベースからデータを取得
   const tasks = await prisma.task.findMany();
-  const data: TaskType[] = tasks.map((task) => {
-    return {
-      id: task.id,
-      title: task.title,
-      status: task.status,
-      updatedAt: task.updatedAt,
-    };
-  });
-  return { tasks: data };
+  return tasks;
 }
 
-const taskItem = (tasks: TaskType[], status: string) => {
+const taskItem = (tasks: Task[], status: string) => {
   return (
     <div className='border rounded-lg p-4 my-4 flex-1'>
       {status}
