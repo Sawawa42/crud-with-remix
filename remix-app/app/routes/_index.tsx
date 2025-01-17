@@ -1,5 +1,5 @@
-import { json, type MetaFunction } from '@remix-run/node'
-import { useLoaderData, Link } from '@remix-run/react'
+import { MetaFunction, ActionFunctionArgs } from '@remix-run/node'
+import { useLoaderData, Link, Form, redirect } from '@remix-run/react'
 
 // @prisma/clientからTask型をimport
 import { PrismaClient, Task } from '@prisma/client';
@@ -33,6 +33,17 @@ export default function Index() {
   )
 }
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const taskId = formData.get("taskId");
+  await prisma.task.delete({
+    where: {
+      id: String(taskId),
+    },
+  });
+  return redirect("/");
+}
+
 // named export
 // loader関数: レンダリング時にデータを取得するためにサーバ側で実行される関数
 export const loader = async () => {
@@ -49,23 +60,30 @@ export const loader = async () => {
   return { tasks: data };
 }
 
-const dateToStr = (input: Date): string => {
-  const result = new Date(input).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit", day: "2-digit"});
-  return result;
-};
-
 const taskItem = (tasks: TaskType[], status: string) => {
   return (
     <div className='border rounded-lg p-4 my-4 flex-1'>
       {status}
       {tasks.map((task) => (
         task.status === status && (
-          <div key={task.id} className="border p-4 my-4">
-            <div>
+          <div key={task.id} className="border p-4 my-4 flex">
+            <div className='flex-1'>
               <Link to={`/tasks/edit/${task.id}`} className="text-blue-600">
                 {task.title}
               </Link>
-              <div className='flex-1'>updatedAt: {dateToStr(task.updatedAt)}</div>
+              <div>
+                updatedAt: {
+                  task.updatedAt.toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"})
+                }
+              </div>
+            </div>
+            <div className='flex-1'>
+              <Form method="delete">
+                <input type="hidden" name="taskId" value={task.id} />
+                <button className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex-1">
+                  delete
+                </button>
+              </Form>
             </div>
           </div>
         )
